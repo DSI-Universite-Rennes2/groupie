@@ -923,7 +923,13 @@ class GroupController extends Controller {
             // On récupère le service ldapfonctions
             $ldapfonctions = $this->container->get('groupie.ldapfonctions');
             $ldapfonctions->SetLdap($this->get('amu.ldap'), $this->config_users, $this->config_groups, $this->config_private);
-            $b =$ldapfonctions->createGroupeLdap($infogroup['dn'], $infogroup['infos']);
+
+            try {
+                $b = $ldapfonctions->createGroupeLdap($infogroup['dn'], $infogroup['infos']);
+            } catch (\Exception $exception) {
+                $b = false;
+            }
+
             if ($b==true) {          
                 // affichage groupe créé
                 $this->get('session')->getFlashBag()->add('flash-notice', 'Le groupe a bien été créé');
@@ -1016,7 +1022,12 @@ class GroupController extends Controller {
                 $parameters['prefix'] = $this->config_private['prefix'].$adm;
                 $infogroup = $group->infosGroupePriveLdap($parameters);
 
-                $b = $ldapfonctions->createGroupeLdap($infogroup['dn'], $infogroup['infos']);
+                try {
+                    $b = $ldapfonctions->createGroupeLdap($infogroup['dn'], $infogroup['infos']);
+                } catch (\Exception $exception) {
+                    $b = false;
+                }
+
                 if ($b==true) { 
                     //Le groupe a bien été créé
                     $this->get('session')->getFlashBag()->add('flash-notice', 'Le groupe a bien été créé');

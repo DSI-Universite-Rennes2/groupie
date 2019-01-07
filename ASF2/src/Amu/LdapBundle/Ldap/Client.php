@@ -195,7 +195,7 @@ class Client
         if ($res) {
             return true;
         } else {
-            throw new Exception('['.ldap_errno($this->link).'] '.ldap_error($this->link));
+            throw new \Exception('['.ldap_errno($this->link).'] '.ldap_error($this->link).', $dn: '.$dn.', $info: '.var_export($info, true));
         }
         return false;
     }
@@ -216,7 +216,7 @@ class Client
         if ($res) {
             return true;
         } else {
-            throw new Exception('['.ldap_errno($this->link).'] '.ldap_error($this->link));
+            throw new \Exception('['.ldap_errno($this->link).'] '.ldap_error($this->link).', $dn: '.$dn.', $info: '.var_export($info, true));
         }
         return false;
     }
