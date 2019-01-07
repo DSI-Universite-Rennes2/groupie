@@ -334,13 +334,16 @@ class Roles
                             $ldap=$this->getLdap();
                             $baseDN = $ldap->getBaseDN();
                             $resource = $ldap->connect();
+                            $groupConfig = $this->container->getParameter('amu.groupie.groups');
 
                             if ($resource) {
 
                                 if ($oneRule['link'] == "isMember") {
                                     $groupName = $oneRule['values'];
-                                    $isMemberFilter = "(&(objectclass=*)(memberof=CN=$groupName,OU=groups,DC=univ-amu,DC=fr)(uid=$user))";
-                                    $baseDN = "dc=univ-amu,dc=fr";
+                                    $groupFullname = sprintf('%s=%s,%s,%s', $groupConfig['cn'], $groupName, $groupConfig['group_branch'], $baseDN); // Ex: CN=monGroupe,OU=groups,DC=univ-amu,DC=fr
+
+                                    $isMemberFilter = sprintf('(&(objectclass=*)(%s=%s)(uid=%s))', $groupConfig['memberof'], $groupFullname, $user);
+
                                     $results = $resource->search($baseDN, $isMemberFilter, array("uid"),false);
                                     if ($results["count"] == 1) {
                                         $arRoles[] = $oneRule['name'];
